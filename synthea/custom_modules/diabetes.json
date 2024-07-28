@@ -1,27 +1,29 @@
 {
-  "name": "Diabetes",
+  "name": "Diabetes Population",
   "remarks": [
-    "A basic diabetes module for Synthea with parameterized percentage restriction"
+    "This module generates a population where 30% have Type 2 Diabetes (SNOMED-CT: 44054006)",
+    "and the remaining 70% are normal patients."
   ],
   "states": {
     "Initial": {
       "type": "Initial",
-      "direct_transition": "Diabetes_Guard"
+      "direct_transition": "Determine Diabetes Status"
     },
-    "Diabetes_Guard": {
-      "type": "Guard",
-      "allow": {
-        "condition_type": "Attribute",
-        "attribute": "diabetes_chance",
-        "operator": "<=",
-        "value": null,
-        "referenced_by_attribute": "diabetes_percentage"
-      },
-      "direct_transition": "Diabetes_Onset"
+    "Determine Diabetes Status": {
+      "type": "Simple",
+      "distributed_transition": [
+        {
+          "distribution": 0.3,
+          "transition": "Assign Diabetes"
+        },
+        {
+          "distribution": 0.7,
+          "transition": "Normal Patient"
+        }
+      ]
     },
-    "Diabetes_Onset": {
+    "Assign Diabetes": {
       "type": "ConditionOnset",
-      "target_encounter": "Diabetes_Diagnosis",
       "codes": [
         {
           "system": "SNOMED-CT",
@@ -29,34 +31,14 @@
           "display": "Diabetes mellitus type 2"
         }
       ],
-      "direct_transition": "Diabetes_Diagnosis"
-    },
-    "Diabetes_Diagnosis": {
-      "type": "Encounter",
-      "encounter_class": "ambulatory",
-      "reason": "Diabetes_Onset",
-      "codes": [
-        {
-          "system": "SNOMED-CT",
-          "code": "185347001",
-          "display": "Encounter for problem"
-        }
-      ],
       "direct_transition": "End"
     },
-    "No_Diabetes": {
-      "type": "Terminal"
+    "Normal Patient": {
+      "type": "Simple",
+      "direct_transition": "End"
     },
     "End": {
       "type": "Terminal"
-    }
-  },
-  "gmf_version": 2,
-  "gmf_attributes": {
-    "diabetes_chance": {
-      "type": "uniform",
-      "low": 0,
-      "high": 1
     }
   }
 }

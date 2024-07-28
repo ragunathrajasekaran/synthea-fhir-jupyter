@@ -8,8 +8,7 @@ docker exec -u synthea synthea java -jar synthea-with-dependencies.jar \
     --exporter.baseDirectory /usr/src/app/output \
     --exporter.fhir.export true \
     --exporter.fhir.use_us_core_ig true \
-    --exporter.fhir.r4.export true \
-    -o diabetes_percentage=0.1
+    --exporter.fhir.r4.export true 
 
 if [ $? -eq 0 ]; then
     echo "Synthea data generation completed successfully."
