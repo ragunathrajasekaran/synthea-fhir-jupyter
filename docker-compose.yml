@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  synthea:
+    build:
+      context: ./synthea
+      dockerfile: Dockerfile
+    container_name: synthea
+    volumes:
+      - ./synthea/custom_modules:/usr/src/app/src/main/resources/modules:ro
+      - fhir_output:/usr/src/app/output
+    user: synthea
+    restart: unless-stopped
+
+  main:
+    build:
+      context: ./main
+      dockerfile: Dockerfile
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - fhir_output:/workspace/fhir-data
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    command: /bin/bash -c "sudo chmod 666 /var/run/docker.sock && while sleep 1000; do :; done"
+    depends_on:
+      - synthea
+
+volumes:
+  fhir_output:
+    name: fhir_output

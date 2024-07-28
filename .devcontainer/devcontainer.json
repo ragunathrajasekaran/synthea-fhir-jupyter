@@ -1,0 +1,17 @@
+{
+    "name": "Synthea FHIR Project",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "main",
+    "workspaceFolder": "/workspace",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash"
+            },
+            "extensions": [
+                "ms-azuretools.vscode-docker"
+            ]
+        }
+    },
+    "remoteUser": "mainuser"
+}

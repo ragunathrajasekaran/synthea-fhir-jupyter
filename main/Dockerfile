@@ -1,0 +1,29 @@
+FROM ubuntu:20.04
+
+# Install necessary tools
+RUN apt-get update && apt-get install -y \
+    sudo \
+    docker.io \
+    bash \
+    jq \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create a shared group with the same GID as in the Synthea container
+RUN groupadd -g 1000 sharedgroup
+
+# Create a non-root user, add it to the shared group and the docker group
+RUN useradd -m -s /bin/bash -u 1000 -g sharedgroup -G docker mainuser
+
+# Allow mainuser to use sudo without password
+RUN echo "mainuser ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/mainuser
+
+WORKDIR /workspace
+
+COPY process_fhir.sh /workspace/
+COPY synthea_script.sh /workspace/
+RUN chmod +x /workspace/process_fhir.sh
+RUN chmod +x /workspace/synthea_script.sh
+
+USER mainuser
+
+CMD ["/bin/bash"]

@@ -1,0 +1,40 @@
+{
+    "name": "Diabetes",
+    "remarks": [
+      "A basic diabetes module for Synthea"
+    ],
+    "states": {
+      "Initial": {
+        "type": "Initial",
+        "direct_transition": "Diabetes_Onset"
+      },
+      "Diabetes_Onset": {
+        "type": "ConditionOnset",
+        "target_encounter": "Diabetes_Diagnosis",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "44054006",
+            "display": "Diabetes mellitus type 2"
+          }
+        ],
+        "direct_transition": "Diabetes_Diagnosis"
+      },
+      "Diabetes_Diagnosis": {
+        "type": "Encounter",
+        "encounter_class": "ambulatory",
+        "reason": "Diabetes_Onset",
+        "codes": [
+          {
+            "system": "SNOMED-CT",
+            "code": "185347001",
+            "display": "Encounter for problem"
+          }
+        ],
+        "direct_transition": "End"
+      },
+      "End": {
+        "type": "Terminal"
+      }
+    }
+  }
