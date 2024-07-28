@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM openjdk:11-slim
 
 # Install necessary tools
 RUN apt-get update && apt-get install -y \
@@ -6,12 +6,18 @@ RUN apt-get update && apt-get install -y \
     docker.io \
     bash \
     jq \
+    curl \
+    python3 \
+    python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-# Create a shared group with the same GID as in the Synthea container
+# Install PySpark
+RUN pip3 install --no-cache-dir pyspark
+
+# Create a shared group with a specific GID
 RUN groupadd -g 1000 sharedgroup
 
-# Create a non-root user, add it to the shared group and the docker group
+# Create a non-root user with a specific UID, add it to the shared group and the docker group
 RUN useradd -m -s /bin/bash -u 1000 -g sharedgroup -G docker mainuser
 
 # Allow mainuser to use sudo without password

@@ -19,11 +19,28 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - fhir_output:/workspace/fhir-data
+      - ./notebooks:/workspace/notebooks
     environment:
       - DOCKER_HOST=unix:///var/run/docker.sock
+      - JUPYTER_SERVER=http://jupyter:8888
     command: /bin/bash -c "sudo chmod 666 /var/run/docker.sock && while sleep 1000; do :; done"
     depends_on:
       - synthea
+      - jupyter
+      
+  jupyter:
+    build:
+      context: ./jupyter
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    volumes:
+      - fhir_output:/home/jovyan/work/fhir-data
+      - ./notebooks:/home/jovyan/work/notebooks
+    environment:
+      - JUPYTER_TOKEN=''
+    user: jovyan
+    command: jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --NotebookApp.token='' --NotebookApp.password=''
 
 volumes:
   fhir_output:

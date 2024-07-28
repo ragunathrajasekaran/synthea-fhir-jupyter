@@ -1,40 +1,62 @@
 {
-    "name": "Diabetes",
-    "remarks": [
-      "A basic diabetes module for Synthea"
-    ],
-    "states": {
-      "Initial": {
-        "type": "Initial",
-        "direct_transition": "Diabetes_Onset"
+  "name": "Diabetes",
+  "remarks": [
+    "A basic diabetes module for Synthea with parameterized percentage restriction"
+  ],
+  "states": {
+    "Initial": {
+      "type": "Initial",
+      "direct_transition": "Diabetes_Guard"
+    },
+    "Diabetes_Guard": {
+      "type": "Guard",
+      "allow": {
+        "condition_type": "Attribute",
+        "attribute": "diabetes_chance",
+        "operator": "<=",
+        "value": null,
+        "referenced_by_attribute": "diabetes_percentage"
       },
-      "Diabetes_Onset": {
-        "type": "ConditionOnset",
-        "target_encounter": "Diabetes_Diagnosis",
-        "codes": [
-          {
-            "system": "SNOMED-CT",
-            "code": "44054006",
-            "display": "Diabetes mellitus type 2"
-          }
-        ],
-        "direct_transition": "Diabetes_Diagnosis"
-      },
-      "Diabetes_Diagnosis": {
-        "type": "Encounter",
-        "encounter_class": "ambulatory",
-        "reason": "Diabetes_Onset",
-        "codes": [
-          {
-            "system": "SNOMED-CT",
-            "code": "185347001",
-            "display": "Encounter for problem"
-          }
-        ],
-        "direct_transition": "End"
-      },
-      "End": {
-        "type": "Terminal"
-      }
+      "direct_transition": "Diabetes_Onset"
+    },
+    "Diabetes_Onset": {
+      "type": "ConditionOnset",
+      "target_encounter": "Diabetes_Diagnosis",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "44054006",
+          "display": "Diabetes mellitus type 2"
+        }
+      ],
+      "direct_transition": "Diabetes_Diagnosis"
+    },
+    "Diabetes_Diagnosis": {
+      "type": "Encounter",
+      "encounter_class": "ambulatory",
+      "reason": "Diabetes_Onset",
+      "codes": [
+        {
+          "system": "SNOMED-CT",
+          "code": "185347001",
+          "display": "Encounter for problem"
+        }
+      ],
+      "direct_transition": "End"
+    },
+    "No_Diabetes": {
+      "type": "Terminal"
+    },
+    "End": {
+      "type": "Terminal"
+    }
+  },
+  "gmf_version": 2,
+  "gmf_attributes": {
+    "diabetes_chance": {
+      "type": "uniform",
+      "low": 0,
+      "high": 1
     }
   }
+}

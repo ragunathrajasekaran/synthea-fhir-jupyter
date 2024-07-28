@@ -6,12 +6,18 @@
     "customizations": {
         "vscode": {
             "settings": {
-                "terminal.integrated.shell.linux": "/bin/bash"
+                "terminal.integrated.shell.linux": "/bin/bash",
+                "python.defaultInterpreterPath": "/usr/bin/python3",
+                "jupyter.jupyterServerType": "remote"
             },
             "extensions": [
-                "ms-azuretools.vscode-docker"
+                "ms-azuretools.vscode-docker",
+                "ms-python.python",
+                "ms-toolsai.jupyter"
             ]
         }
     },
-    "remoteUser": "mainuser"
+    "remoteUser": "mainuser",
+    "forwardPorts": [8888],
+    "postCreateCommand": "echo 'Jupyter server is available at http://localhost:8888'"
 }

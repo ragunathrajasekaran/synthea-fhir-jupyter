@@ -21,15 +21,13 @@ FROM openjdk:11-jre
 
 WORKDIR /usr/src/app
 
-# Copy the built JAR from the build stage
 COPY --from=build /usr/src/app/build/libs/synthea-with-dependencies.jar .
 
-# Create a shared group, non-root user, and set up the output directory
-RUN groupadd -r sharedgroup && \
-    useradd -r -g sharedgroup synthea && \
+RUN groupadd -g 1000 sharedgroup && \
+    useradd -u 1000 -g sharedgroup synthea && \
     mkdir -p /usr/src/app/output && \
-    chown synthea:sharedgroup /usr/src/app/output && \
-    chmod 775 /usr/src/app/output
+    chown -R synthea:sharedgroup /usr/src/app && \
+    chmod -R 775 /usr/src/app
 
 USER synthea
 
